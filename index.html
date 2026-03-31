@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PMAL 2026 - Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .active-day { background-color: #1e293b !important; color: white !important; border-color: #1e293b !important; transform: scale(0.95); }
+        .timeline-card { transition: all 0.2s ease; }
+        .timeline-card:active { transform: scale(0.98); background-color: #f1f5f9; }
+    </style>
+</head>
+<body class="pb-10">
+
+    <header class="bg-slate-900 text-white p-4 sticky top-0 z-50 shadow-md">
+        <div class="flex justify-between items-center">
+            <h1 class="font-extrabold text-lg tracking-tight">🦅 MISSÃO PMAL 2026</h1>
+            <span id="current-date" class="text-xs font-mono text-slate-400"></span>
+        </div>
+    </header>
+
+    <main class="p-4 space-y-6">
+        
+        <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-200">
+            <h2 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-widest text-center">Distribuição de Tempo</h2>
+            <div style="height: 180px; position: relative;">
+                <canvas id="mobileChart"></canvas>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <p class="text-sm font-bold text-slate-700 ml-1">Selecione o Dia:</p>
+            <div class="flex overflow-x-auto gap-2 no-scrollbar pb-2" id="day-selector">
+                </div>
+        </div>
+
+        <div id="mobile-timeline" class="space-y-4">
+            </div>
+
+    </main>
+
+    <script>
+        const schedule = {
+            segunda: [
+                { t: "05:00", task: "Corrida Praça", cat: "TAF", icon: "🏃" },
+                { t: "07:00", task: "Estudo: Mat/RLM", cat: "Estudo", icon: "📚" },
+                { t: "12:00", task: "IFAL", cat: "Obrigatório", icon: "🏫" },
+                { t: "19:20", task: "Academia", cat: "TAF", icon: "🏋️" },
+                { t: "21:40", task: "Questões Mat", cat: "Revisão", icon: "📝" }
+            ],
+            terca_quinta: [
+                { t: "05:00", task: "Corrida Tiros", cat: "TAF", icon: "⚡" },
+                { t: "07:00", task: "Estudo: Penal", cat: "Estudo", icon: "⚖️" },
+                { t: "08:00", task: "IFMAKER", cat: "Obrigatório", icon: "💻" },
+                { t: "21:40", task: "Questões Penal", cat: "Revisão", icon: "📝" }
+            ],
+            sabado: [
+                { t: "08:00", task: "Revisão Anki", cat: "Estudo", icon: "🔄" },
+                { t: "10:00", task: "Simulado Parcial", cat: "Treino", icon: "⏱️" }
+            ],
+            domingo: [
+                { t: "08:00", task: "Simulado Geral", cat: "Treino", icon: "🎯" },
+                { t: "14:00", task: "Redação", cat: "Estudo", icon: "✍️" }
+            ]
+        };
+
+        const days = [
+            { id: 'seg', label: 'Seg', key: 'segunda' },
+            { id: 'ter', label: 'Ter', key: 'terca_quinta' },
+            { id: 'qua', label: 'Qua', key: 'terca_quinta' },
+            { id: 'qui', label: 'Qui', key: 'terca_quinta' },
+            { id: 'sex', label: 'Sex', key: 'segunda' },
+            { id: 'sab', label: 'Sáb', key: 'sabado' },
+            { id: 'dom', label: 'Dom', key: 'domingo' }
+        ];
+
+        function renderTimeline(key) {
+            const container = document.getElementById('mobile-timeline');
+            container.innerHTML = '';
+            const items = schedule[key] || schedule.segunda;
+            
+            items.forEach(item => {
+                container.innerHTML += `
+                    <div class="timeline-card bg-white p-4 rounded-2xl flex items-center gap-4 border border-slate-100 shadow-sm">
+                        <div class="text-2xl">${item.icon}</div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-800 text-sm">${item.task}</h4>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold">${item.cat}</p>
+                        </div>
+                        <div class="font-mono font-bold text-blue-600 text-sm">${item.t}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function init() {
+            const selector = document.getElementById('day-selector');
+            const now = new Date();
+            const todayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1;
+
+            days.forEach((day, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "min-w-[70px] py-4 rounded-2xl bg-white border border-slate-200 font-bold text-slate-600 shadow-sm";
+                btn.innerText = day.label;
+                btn.onclick = () => {
+                    document.querySelectorAll('#day-selector button').forEach(b => b.classList.remove('active-day'));
+                    btn.classList.add('active-day');
+                    renderTimeline(day.key);
+                };
+                selector.appendChild(btn);
+                if(idx === todayIdx) btn.click();
+            });
+
+            new Chart(document.getElementById('mobileChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sono', 'IFAL', 'Estudo', 'TAF'],
+                    datasets: [{
+                        data: [42, 46, 28, 15],
+                        backgroundColor: ['#1e293b', '#2563eb', '#f59e0b', '#10b981'],
+                        borderWidth: 0,
+                        cutout: '80%'
+                    }]
+                },
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

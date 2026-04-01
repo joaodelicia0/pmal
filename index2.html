@@ -27,6 +27,27 @@
         }
         .checkbox-custom.checked { background-color: #2563eb; border-color: #2563eb; }
         .checkbox-custom.checked::after { content: '✓'; color: white; font-weight: bold; font-size: 0.8rem; }
+        .menu-simples {
+    margin: 20px;
+}
+
+.menu-simples a {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #ccc;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    transition: 0.3s;
+    font-family: Arial, sans-serif;
+}
+
+.menu-simples a:hover {
+    color: #fff;
+    background-color: #333;
+    transform: scale(1.05);
+}
     </style>
 </head>
 <body class="pb-20">
@@ -37,6 +58,10 @@
             <button onclick="showTab('geral')" id="tab-geral" class="flex-1 py-4 text-[10px] font-black uppercase tracking-widest tab-active">Visão Geral</button>
             <button onclick="showTab('estudo')" id="tab-estudo" class="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Plano de Estudos</button>
         </div>
+    </nav>
+    <nav class="menu-simples">
+        <a href="index.html">Página Principal</a><br>
+        <a href="index3.html">Cronograma Diario</a>
     </nav>
 
     <!-- ABA 1: VISÃO GERAL (Macro) -->

@@ -72,12 +72,34 @@
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        .menu-simples {
+    margin: 20px;
+}
+
+.menu-simples a {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #ccc;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    transition: 0.3s;
+    font-family: Arial, sans-serif;
+}
+
+.menu-simples a:hover {
+    color: #fff;
+    background-color: #333;
+    transform: scale(1.05);
+}
     </style>
 </head>
 <body class="antialiased selection:bg-blue-200 selection:text-blue-900">
-     <nav>
-        <a href="index2.html" class="hover:text-white transition">Dashboard</a><br>
-        <a href="index3.html" class="hover:text-white transition">Cronograma Diario</a>
+    <nav class="menu-simples">
+        <a href="index2.html">Dashboard</a><br>
+        <a href="index3.html">Cronograma Diario</a>
     </nav>
 
 
